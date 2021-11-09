@@ -10,6 +10,9 @@ require "mongoid/observer"
 module Mongoid
   include ActiveModel::Observing
 
-  delegate(*ActiveModel::Observing::ClassMethods.public_instance_methods(false) <<
-    { to: Config })
+  # Use def_delegators from Forwardable instead of delegate from ActiveSupport as it conflicts
+  # with Forwardable delegate/instance_delegate.
+  # See: https://jira.mongodb.org/browse/MONGOID-4849
+
+  def_delegators Config, *(ActiveModel::Observing::ClassMethods.public_instance_methods(false))
 end
